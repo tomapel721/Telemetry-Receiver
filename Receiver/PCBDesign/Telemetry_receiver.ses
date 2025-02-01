@@ -1,0 +1,159 @@
+
+(session Telemetry_receiver.ses
+  (base_design Telemetry_receiver.dsn)
+  (placement
+    (resolution um 10)
+    (component RF_Module:nRF24L01_Breakout
+      (place U2 1689100 -1003300 front 0)
+    )
+    (component Telemetry_receiver:AdafruitFT232HBreakout
+      (place U1 1346550 -1143450 front 0)
+    )
+    (component Capacitor_SMD:C_0805_2012Metric
+      (place C100nF1 1701800 -939800 front 180)
+    )
+    (component TP17R
+      (place "D-" 1300860 -903986 back 0)
+      (place D+ 1300860 -942086 back 0)
+    )
+    (component "PCBFEAT-REV-040"
+      (place U$11 1589790 -883666 back 0)
+    )
+  )
+  (was_is
+  )
+  (routes 
+    (resolution um 10)
+    (parser
+      (host_cad "KiCad's Pcbnew")
+      (host_version "(5.1.8)-1")
+    )
+    (library_out 
+      (padstack "Via[0-1]_800:400_um"
+        (shape
+          (circle F.Cu 8000 0 0)
+        )
+        (shape
+          (circle B.Cu 8000 0 0)
+        )
+        (attach off)
+      )
+    )
+    (network_out 
+      (net "Net-(C100nF1-Pad2)"
+        (wire
+          (path B.Cu 10000
+            1689100 -1003300
+            1512100 -1003300
+            1371950 -1143450
+          )
+        )
+        (wire
+          (path F.Cu 10000
+            1689100 -1003300
+            1689100 -985681
+          )
+        )
+        (wire
+          (path F.Cu 10000
+            1692300 -939800
+            1692300 -982481
+            1689100 -985681
+          )
+        )
+      )
+      (net "Net-(C100nF1-Pad1)"
+        (wire
+          (path B.Cu 10000
+            1714500 -1003300
+            1699863 -988663
+            1475937 -988663
+            1321150 -1143450
+          )
+        )
+        (wire
+          (path F.Cu 10000
+            1711300 -939800
+            1714500 -943000
+            1714500 -1003300
+          )
+        )
+      )
+      (net "Net-(U1-Pad3)"
+        (wire
+          (path F.Cu 10000
+            1397350 -1143450
+            1486700 -1054100
+            1689100 -1054100
+          )
+        )
+      )
+      (net "Net-(U1-Pad4)"
+        (wire
+          (path F.Cu 10000
+            1422750 -1143450
+            1463355 -1102845
+            1711864 -1102845
+            1729146 -1085563
+            1729146 -1068746
+            1714500 -1054100
+          )
+        )
+      )
+      (net "Net-(U1-Pad5)"
+        (wire
+          (path F.Cu 10000
+            1532244 -1084631
+            1683969 -1084631
+            1689100 -1079500
+          )
+        )
+        (via "Via[0-1]_800:400_um" 1532244 -1084631
+        )
+        (wire
+          (path B.Cu 10000
+            1448150 -1143450
+            1506969 -1084631
+            1532244 -1084631
+          )
+        )
+      )
+      (net "Net-(U1-Pad6)"
+        (wire
+          (path B.Cu 10000
+            1473550 -1143450
+            1488575 -1158475
+            1656240 -1158475
+            1729130 -1085585
+            1729130 -1043330
+            1714500 -1028700
+          )
+        )
+      )
+      (net "Net-(U1-Pad7)"
+        (wire
+          (path B.Cu 10000
+            1498950 -1143450
+            1565433 -1076967
+            1640833 -1076967
+            1689100 -1028700
+          )
+        )
+      )
+      (net "Net-(U1-Pad8)"
+        (wire
+          (path B.Cu 10000
+            1714500 -1079500
+            1694769 -1099231
+            1692689 -1099771
+            1691486 -1100974
+            1683599 -1108861
+            1673655 -1108861
+            1657655 -1108861
+            1524350 -1143450
+          )
+        )
+      )
+    )
+  )
+)

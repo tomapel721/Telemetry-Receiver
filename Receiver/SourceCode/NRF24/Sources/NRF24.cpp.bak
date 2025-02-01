@@ -1,0 +1,546 @@
+/*
+* NRF24.cpp
+*
+* Created on: 04.10.2021
+*    Company: PolSl Racing
+* Department: Electronics Team
+*     Author: Tomasz Pelan
+*/
+
+#include <iostream>
+#include "../NRF24_Headers/NRF24.hpp"
+#include <iostream>
+#include <stdio.h>
+#include <Windows.h>
+#include "../FTDI_Library/libMPSSE_spi.h"
+#include "../FTDI_Library/ftd2xx.h"
+#include <memory>
+
+using namespace std;
+using namespace NRF24;
+uint8_t NRF24::addrP0Backup[3];
+
+								/*****    Constructor/Destructor    *****/
+NRF24Device::NRF24Device()
+{
+	FT_STATUS status;
+	/* FTDI SPI init */
+	Init_libMPSSE();
+
+	/* Opening SPI channel */
+	const int channelIndex = 0;
+	cout << "Inicjalizuje NRF'a" << endl;
+	status = SPI_OpenChannel(channelIndex, &handle);
+	if (status != FT_OK)
+	{
+		cout << "Error during openning the channel." << endl;
+	}
+
+	/* Configuring this opened SPI channel */
+	ChannelConfig channelConfig;
+	channelConfig.ClockRate = 250000; // by³y 2 Mhz i nie dzia³a³o
+	channelConfig.configOptions = SPI_CONFIG_OPTION_MODE0 // tryb SPI 00 
+		| SPI_CONFIG_OPTION_CS_DBUS7 // Chip select na pinie D7
+		| SPI_CONFIG_OPTION_CS_ACTIVELOW; // Chip select aktywny stanem niskim
+	channelConfig.LatencyTimer = 75; // opóŸnienie - miedzy 1 a 255 - trzeba bêdzie dobraæ balans do potrzeb
+	channelConfig.Pin = 0x00000000; // chuj wie ale mo¿e zacznie dzia³aæ
+	status = SPI_InitChannel(handle, &channelConfig);
+	if (status != FT_OK)
+	{
+		cout << "Error during initalisation of SPI channel." << endl;
+	}
+	else
+	{
+		cout << "Channel configured successfuly." << endl;
+	}
+	/************************************************************/
+}
+
+NRF24Device::~NRF24Device()
+{
+	Cleanup_libMPSSE();
+}
+								/******    Addressing the Transmitter/Receiver    ******/
+
+void NRF24Device::SetRXAddress(uint8_t pipe, uint8_t* address)
+{
+	// pipe 0 and pipe 1 are fully 40-bits storaged
+	// pipe 2-5 is storaged only with last byte. Rest are as same as pipe 1
+	// pipe 0 and 1 are LSByte first so they are needed to reverse address
+	if (address == nullptr)
+		return;
+
+	if ((pipe == 0) || (pipe == 1))
+	{
+		uint8_t indexOfArrayAdresses;
+		uint8_t addressRev[NRF24::ADDR_SIZE];
+		for (indexOfArrayAdresses = 0; indexOfArrayAdresses < NRF24::ADDR_SIZE; indexOfArrayAdresses++)
+		{
+			addressRev[NRF24::ADDR_SIZE - 1 - indexOfArrayAdresses] = address[indexOfArrayAdresses];
+		}
+		//nRF24_WriteRegisters(NRF24_RX_ADDR_P0 + pipe, address_rev, NRF24_ADDR_SIZE);
+	}
+	else
+	{
+		WriteRegister(NRF24::RX_ADDR_P0 + pipe, address[NRF24::ADDR_SIZE - 1]);
+	}
+		
+}
+
+void NRF24Device::SetTXAddress(uint8_t* address)
+{
+	// TX address is storaged similar to RX pipe 0 - LSByte first
+	uint8_t indexOfArrayAdresses;
+	uint8_t address_rev[NRF24::ADDR_SIZE];
+
+	//nRF24_ReadRegisters(NRF24_RX_ADDR_P0, address_rev, NRF24_ADDR_SIZE); // Backup P0 address
+	for (indexOfArrayAdresses = 0; indexOfArrayAdresses < NRF24::ADDR_SIZE; indexOfArrayAdresses++)
+	{
+		NRF24::addrP0Backup[NRF24::ADDR_SIZE - 1 - indexOfArrayAdresses] = address_rev[indexOfArrayAdresses]; //Reverse P0 address
+	}
+		
+
+	for (indexOfArrayAdresses = 0; indexOfArrayAdresses < NRF24::ADDR_SIZE; indexOfArrayAdresses++)
+	{
+		address_rev[NRF24::ADDR_SIZE - 1 - indexOfArrayAdresses] = address[indexOfArrayAdresses];
+	}
+	
+	//make pipe 0 address backup;
+
+	//nRF24_WriteRegisters(NRF24_RX_ADDR_P0, address_rev, NRF24_ADDR_SIZE); // Pipe 0 must be same for auto ACk
+	//nRF24_WriteRegisters(NRF24_TX_ADDR, address_rev, NRF24_ADDR_SIZE);
+}
+
+								/******    Modes of work (RX/TX)    ******/
+
+void NRF24Device::RxMode() // mo¿e byæ ¿e komunikacja z SPI bêdzie lekko zmieniona
+{
+	uint8_t config = ReadRegister(NRF24::CONFIG);
+	// Restore pipe 0 adress after comeback from TX mode
+	SetRXAddress(0, NRF24::addrP0Backup);
+	// PWR_UP bit set
+	config |= (1 << NRF24::BIT_CONFIG__PWR_UP);
+	// PRIM_RX bit set
+	config |= (1 << NRF24::BIT_CONFIG__PRIM_RX);
+	WriteRegister(NRF24::CONFIG, config);
+	// Reset status
+	WriteRegister(NRF24::STATUS, (1 << NRF24::BIT_STATUS__RX_DR) | (1 << NRF24::BIT_STATUS__TX_DS) | (1 << NRF24::BIT_STATUS__MAX_RT));
+	// Flush RX
+	FlushRX();
+	// Flush TX
+	FlushTX();
+
+	//NRF24_CE_HIGH; <- mo¿e byæ w przysz³oœæi kontuzjogenne
+	Sleep(1); // <==> HAL_Delay(1)
+}
+
+void NRF24Device::TxMode()
+{
+	//NRF24_CE_LOW;
+
+	uint8_t config = ReadRegister(NRF24::CONFIG);
+	// PWR_UP bit set
+	config |= (1 << NRF24::BIT_CONFIG__PWR_UP);
+	// PRIM_RX bit low
+	config &= ~(1 << NRF24::BIT_CONFIG__PRIM_RX);
+	WriteRegister(NRF24::CONFIG, config);
+	// Reset status
+	WriteRegister(NRF24::STATUS, (1 << NRF24::BIT_STATUS__RX_DR) | (1 << NRF24::BIT_STATUS__TX_DS) | (1 << NRF24::BIT_STATUS__MAX_RT));
+	// Flush RX
+	FlushRX();
+	// Flush TX
+	FlushTX();
+
+	Sleep(1); // <==> HAL_Delay(1)
+}
+
+								/******    Data read    ******/
+
+bool NRF24Device::RxAvailable()
+{
+	uint8_t status = ReadRegister(NRF24::STATUS);
+
+	// RX FIFO Interrupt
+	if ((status & (1 << 6)))
+	{
+		//nrf24_rx_flag = 1;
+		status |= (1 << 6); // Interrupt flag clear
+
+		WriteRegister(NRF24::STATUS, status);
+		return true;
+	}
+	return false;
+}
+
+void NRF24Device::ReadRXPayload(uint8_t* data)
+{
+	ReadRegisters(NRF24::CMD_R_RX_PAYLOAD, data, NRF24::DEFAULT_PAYLOAD_SIZE);
+
+	WriteRegister(NRF24::STATUS, (1 << NRF24::BIT_STATUS__RX_DR));
+	uint8_t status = ReadRegister(NRF24::STATUS);
+
+	if (status & (1 << NRF24::BIT_STATUS__TX_DS))
+	{
+		WriteRegister(NRF24::STATUS, (1 << NRF24::BIT_STATUS__TX_DS));
+	}
+		
+}
+
+								/******    Register functions    ******/
+
+uint32_t NRF24Device::WriteRegister(const uint8_t reg, const uint8_t dataToSend)
+{
+	uint32_t transferOptions = SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES
+		| SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE
+		| SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE;
+
+	FT_STATUS status;
+	uint32 dataWritten = 0;
+
+	uint32 dataSize = 2;
+	uint8 dataForSPI[2];
+
+	dataForSPI[0] = NRF24::CMD_DATA_WRITE | reg; // first byte is writing command and register
+	dataForSPI[1] = dataToSend; //second is data
+
+	status = SPI_Write(NRF24Device::handle, dataForSPI, dataSize, &dataWritten, transferOptions);
+	// TODO: Po testach wywalic cout'y
+	cout << "SPI transmission: " << dataWritten << " bytes sent." << endl;
+
+	if (status != FT_OK || dataWritten == 0)
+	{
+		cout << "Data was not written properly during SPI send operation." << endl;
+	}
+	return dataWritten;
+}
+
+uint32_t NRF24Device::WriteRegisters(const uint8_t reg, uint8_t* dataToSend, const uint8_t lengthOfData)
+{
+	uint32_t transferOptions = SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES
+		| SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE
+		| SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE;
+
+	FT_STATUS status;
+	uint32 dataWritten = 0;
+
+	uint32 dataSize = lengthOfData + 1; // first byte is SPI command, then we are relocating given as argument data
+
+	unique_ptr<uint8_t[]> dataForSPI = make_unique<uint8_t[]>(dataSize); //memory allocation
+
+	dataForSPI[0] = NRF24::CMD_DATA_WRITE | reg; // first byte is command and register
+
+	for (int i = 0; i < lengthOfData; i++) // Then data
+	{
+		dataForSPI[i + 1] = dataToSend[i];
+	}
+
+	status = SPI_Write(NRF24::NRF24Device::handle, dataForSPI.get(), dataSize, &dataWritten, transferOptions);
+
+	cout << "SPI transmission: " << dataWritten << " bytes sent." << endl;
+
+	if (status != FT_OK || dataWritten == 0)
+	{
+		cout << "Data was not written properly during SPI send operation." << endl;
+	}
+	
+	return dataWritten;
+}
+
+uint8_t NRF24Device::ReadRegister(const uint8_t reg)
+{
+
+	FT_STATUS status;
+
+	uint32 dataSize = 2;
+	uint32 dataSent = 0;
+	uint8 spiReadCommand = NRF24::CMD_DATA_READ | reg; // first byte is command and register
+
+	uint32_t sizeToTransfer = 1; // for command
+
+
+	status = SPI_Write(NRF24::NRF24Device::handle, &spiReadCommand, sizeToTransfer, &dataSent, SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES
+		| SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE); // sending command only
+
+	sizeToTransfer = 2;
+	status = SPI_Read(handle, readedData, sizeToTransfer, &dataSent, SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES
+		| SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE); // actual data reading
+
+	// TODO: Po testach wywalic cout'y
+	cout << "SPI transmission: " << dataSent << " bytes read." << endl;
+	if (status != FT_OK)
+	{
+		cout << "Data was not written and readed properly during SPI send operation." << endl;
+	}
+
+	return readedData[0]; 
+}
+
+uint32_t NRF24Device::ReadRegisters(uint8_t reg, uint8_t* returnedData, const uint8_t lengthOfData)
+{
+	FT_STATUS status;
+
+	unique_ptr<uint8_t[]> readedData = make_unique<uint8_t[]>(lengthOfData); 
+	uint32 dataSent = 0;
+	uint32 dataRead = 0;
+
+	uint8_t spiReadCommand = NRF24::CMD_DATA_READ | reg; // first byte is command and register
+	
+	uint32_t sizeToTransfer = 1; // for command
+
+	status = SPI_Write(NRF24::NRF24Device::handle, &spiReadCommand, sizeToTransfer, &dataSent, SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES
+		| SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE); // sending command only
+
+	status = SPI_Read(handle, readedData.get(), lengthOfData, &dataRead, SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES
+		| SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE); // actual data reading
+
+	for (int i = 0; i < lengthOfData; i++)
+	{
+		cout << "Odczytano: " << endl;
+		cout << (unsigned)readedData[i] << endl;
+	}
+	return dataRead;
+}
+								/*****     Setters     *****/
+
+void NRF24Device::SetPAlevel(NRF24::PALevel level) 
+{
+	uint8_t rfSetup = ReadRegister(NRF24::RF_SETUP);
+	rfSetup &= 0xF8; // Clear PWR bits
+	rfSetup |= ((int)level << 1);
+	WriteRegister(NRF24::RF_SETUP, rfSetup);
+	
+}
+
+void NRF24Device::SetDataRate(NRF24::DataRate dataRate)
+{
+	
+		uint8_t rfSetup = ReadRegister(NRF24::RF_SETUP);
+		rfSetup &= 0xD7; // Clear DR bits (1MBPS)
+		if (dataRate == NRF24::DataRate::DATA_RATE_250KBPS)
+		{
+			rfSetup |= (1 << NRF24::BIT_RF_SETUP__RF_DR_LOW);
+		}
+		else if (dataRate == NRF24::DataRate::DATA_RATE_2MBPS)
+		{
+			rfSetup |= (1 << NRF24::BIT_RF_SETUP__RF_DR_HIGH);
+		}
+		WriteRegister(NRF24::RF_SETUP, rfSetup);
+	
+}
+
+void NRF24Device::SetCRC(bool isCrcEnabled)
+{
+	uint8_t config = ReadRegister(NRF24::CONFIG);
+
+	if (isCrcEnabled)
+	{
+		config |= (1 << NRF24::BIT_CONFIG__EN_CRC);
+	}
+	else
+	{
+		config &= ~(1 << NRF24::BIT_CONFIG__EN_CRC);
+	}
+	WriteRegister(NRF24::CONFIG, config); 
+}
+
+void NRF24Device::SetCRCLength(NRF24::CrcLength lengthOfCRC)
+{
+	uint8_t config = ReadRegister(NRF24::CONFIG);
+	if (lengthOfCRC == NRF24::CrcLength::CRC_LENGTH_2B)
+	{
+		config |= (1 << NRF24::BIT_CONFIG__CRCO);
+	}
+	else
+	{
+		config &= ~(1 << NRF24::BIT_CONFIG__CRCO);
+	}
+	WriteRegister(NRF24::CONFIG, config);
+}
+
+void NRF24Device::SetRetries(uint8_t autoRetransmitDelay, uint8_t autoRetransmitCount)
+{
+	WriteRegister(NRF24::SETUP_RETR, (((autoRetransmitDelay & 0x0F) << NRF24::BIT_SETUP_RETR__ARD) | ((autoRetransmitCount & 0x0F) << NRF24::BIT_SETUP_RETR__ARC)));
+}
+
+void NRF24Device::DisableDynamicPayload()
+{
+	WriteRegister(NRF24::DYNPD, 0);
+}
+
+void NRF24Device::SetPayloadSize(uint8_t numberOfPipe)
+{
+	if (numberOfPipe > 5)
+	{
+		numberOfPipe = 5; // Block too high pipe number
+	}
+	WriteRegister(NRF24::RX_PW_P0 + numberOfPipe, (NRF24::DEFAULT_PAYLOAD_SIZE & 0x3F));
+}
+
+void NRF24Device::SetRadioChannel(uint8_t numberOfChannel)
+{
+	WriteRegister(NRF24::RF_CH, (numberOfChannel & 0x7F));
+}
+
+void NRF24Device::EnablePipe(uint8_t numberOfPipe, bool isThisPipeOn)
+{
+	if (numberOfPipe > 5)
+	{
+		numberOfPipe = 5; // Block too high pipe number
+	}
+	uint8_t enable_pipe = ReadRegister(NRF24::EN_RXADDR);
+	if (isThisPipeOn)
+	{
+		enable_pipe |= (1 << numberOfPipe);
+	}
+	else
+	{
+		enable_pipe &= ~(1 << numberOfPipe);
+	}
+	WriteRegister(NRF24::EN_RXADDR, enable_pipe);
+}
+
+void NRF24Device::SetAutoAcknowlage(uint8_t numberOfPipe, bool isAutoACKenabledForThisPipe)
+{
+	if (numberOfPipe > 5)
+	{
+		numberOfPipe = 5; // Block too high pipe number
+	}
+		
+	uint8_t enableAutoAcknowledge = ReadRegister(NRF24::EN_AA);
+	if (isAutoACKenabledForThisPipe)
+	{
+		enableAutoAcknowledge |= (1 << numberOfPipe);
+	}
+	else
+	{
+		enableAutoAcknowledge &= ~(1 << numberOfPipe);
+	}
+	WriteRegister(NRF24::EN_AA, enableAutoAcknowledge);
+}
+
+void NRF24Device::SetAddressWidth(uint8_t widthOfAddress)
+{
+	if (widthOfAddress > 5)
+	{
+		widthOfAddress = 5; // Maximum are 5 bytes
+	}
+	if (widthOfAddress < 3)
+	{
+		widthOfAddress = 3; // Minimum are 3 bytes
+	}
+	WriteRegister(NRF24::SETUP_AW, ((widthOfAddress - 2) & 0x03));
+}
+
+void NRF24Device::EnableIRQ(NRF24::IrqType typeOfIRQ, bool isThisInterruptEnabled)
+{
+	uint8_t config = ReadRegister(NRF24::CONFIG);
+	uint8_t whatIsSwitched = 0;
+
+	switch (typeOfIRQ)
+	{
+	case NRF24::IrqType::IRQ_TYPE_RX_DR:
+		whatIsSwitched = NRF24::BIT_STATUS__RX_DR; 
+		break;
+	case NRF24::IrqType::IRQ_TYPE_TX_DS:
+		whatIsSwitched = NRF24::BIT_STATUS__TX_DS;
+		break;
+	case NRF24::IrqType::IRQ_TYPE_MAX_RT:
+		whatIsSwitched = NRF24::BIT_STATUS__MAX_RT;
+		break;
+	}
+
+	if (!isThisInterruptEnabled)				// note: this condition is valid, it has to be negated 
+		config |= (1 << whatIsSwitched);
+	else
+		config &= ~(1 << whatIsSwitched);
+
+	WriteRegister(NRF24::CONFIG, config); 
+}
+
+								/******    Clear/Flush functions    ******/
+void NRF24Device::ClearInterrupts()
+{
+	uint8_t status = ReadRegister(NRF24::STATUS);
+	status |= (7 << 4); // Clear bits 4, 5, 6.
+	WriteRegister(NRF24::STATUS, status);
+}
+
+void NRF24Device::FlushRX()
+{
+	uint32_t transferOptions = SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES
+		| SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE
+		| SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE;
+
+	FT_STATUS status;
+	uint32 dataWritten = 0;
+
+	uint32 dataSize = 1;
+	uint8_t command = NRF24::CMD_FLUSH_RX;
+	
+	status = SPI_Write(handle, &command, dataSize, &dataWritten, transferOptions);
+
+}
+
+void NRF24Device::FlushTX()
+{
+	uint32_t transferOptions = SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES
+		| SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE
+		| SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE;
+
+	FT_STATUS status;
+	uint32 dataWritten = 0;
+
+	uint32 dataSize = 1;
+	uint8_t command = NRF24::CMD_FLUSH_TX;
+
+	status = SPI_Write(handle, &command, dataSize, &dataWritten, transferOptions);
+}
+
+void NRF24Device::init()
+{
+	//Wait do radio to power up
+	Sleep(5);
+	//nRF24_SetPALevel(NRF24_PA_PWR_0dBM); // Radio power	
+	SetPAlevel(PALevel::PA_LEVEL_0dBM);																				// -> RF_SETUP
+	//nRF24_SetDataRate(NRF24_RF_DR_1MBPS); // Data Rate
+	SetDataRate(DataRate::DATA_RATE_1MBPS);																			// RF_SETUP
+	//enablecrc
+	SetCRC(true); // Enable CRC																						// -> config
+	//nRF24_SetCRCLength(NRF24_CRC_WIDTH_1B); // CRC Length 1 byte 
+	SetCRCLength(CrcLength::CRC_LENGTH_1B);																			// -> config
+	//nRF24_SetRetries(0x04, 0x07); // 1000us, 7 times
+	SetRetries(0x04, 0x07);																							// setup_retr
+	//nRF24_WriteRegister(NRF24_DYNPD, 0); // Disable dynamic payloads for all pipes
+	DisableDynamicPayload();																						// -> DYNPD
+	//nRF24_SetPayloadSize(0, NRF24_PAYLOAD_SIZE); // Set 32 bytes payload for pipe 0
+	SetPayloadSize(0);																								// -> RX_PW_P0
+	//nRF24_SetRFChannel(10); // Set RF channel for transmission
+	SetRadioChannel(10);																							// -> rf_ch
+	//nRF24_EnablePipe(0, 1); // Enable pipe 0
+	EnablePipe(0, true);																							// ->EN_RXADDR
+	//nRF24_AutoACK(0, 1); // Enable auto ACK for pipe 0
+	SetAutoAcknowlage(0, true);																						 // -> EN_AA 
+	//nRF24_SetAddressWidth(NRF24_ADDR_SIZE); // Set address size
+	SetAddressWidth(ADDR_SIZE);																						 // -> setup_aw
+
+	//nRF24_Delay_ms(1);
+	Sleep(1);
+
+    //#if (NRF24_USE_INTERRUPT == 1)
+	//	nRF24_EnableRXDataReadyIRQ(1);
+	//#endif
+	//#if (NRF24_USE_INTERRUPT == 0)
+	//	nRF24_EnableRXDataReadyIRQ(0);
+	//#endif
+	//	nRF24_EnableTXDataSentIRQ(1);
+	//	nRF24_EnableMaxRetransmitIRQ(1);
+	EnableIRQ(IrqType::IRQ_TYPE_MAX_RT, true);																			// -> config
+	EnableIRQ(IrqType::IRQ_TYPE_RX_DR, true);																			// -> config
+	EnableIRQ(IrqType::IRQ_TYPE_TX_DS, false);																			// -> config
+
+
+	//nRF24_Delay_ms(1);
+	Sleep(1);
+	//nRF24_ClearInterrupts();
+	ClearInterrupts();																									// -> STATUS
+}

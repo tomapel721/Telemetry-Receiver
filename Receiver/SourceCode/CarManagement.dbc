@@ -1,0 +1,347 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: SuspDriver DRSDriver LVDriver GPStoCAN PI_CAN2 tireTempCam_FL tireTempCam_FR tireTempCam_RL tireTempCam_RR Steering_wheel
+
+
+BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
+ SG_ Brake_Pressure_Fr : 0|64@1- (1,0) [0|52.5] "bar" Vector__XXX
+ SG_ Brake_Pressure_Re : 0|64@1- (1,0) [0|52.5] "bar" Vector__XXX
+ SG_ APPS_deviation1 : 34|1@1+ (1,0) [0|1] "state" Vector__XXX
+ SG_ Vehicle_Mode : 0|2@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1536 Suspension: 8 SuspDriver
+ SG_ LeftFront : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RightFront : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ LeftRear : 32|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ RightRear : 48|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1537 DRS: 2 DRSDriver
+ SG_ DRSOpen : 0|8@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ ConstantValue : 8|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1538 LV_Temperature: 6 LVDriver
+ SG_ Temp_left : 0|16@1+ (0.1,0) [0|200] "" Vector__XXX
+ SG_ Temp_centre : 16|16@1+ (0.1,0) [0|200] "" Vector__XXX
+ SG_ Temp_right : 32|16@1+ (0.1,0) [0|200] "" Vector__XXX
+
+BO_ 1539 LV_Bat_Parameters: 8 LVDriver
+ SG_ Current : 0|16@1+ (34.48275862,-86.2069) [-75|75] "A" Vector__XXX
+ SG_ Voltage : 16|16@1+ (0.00024414,0) [0|16] "V" Vector__XXX
+ SG_ Power : 32|32@1+ (0.00841863,0) [0|900] "W" Vector__XXX
+
+BO_ 1024 gps_400: 8 GPStoCAN
+ SG_ Latitude : 7|32@0- (1e-07,0) [0|0] "°" Vector__XXX
+ SG_ Longitude : 39|32@0- (1e-07,0) [0|0] "°" Vector__XXX
+
+BO_ 1025 gps_401: 8 GPStoCAN
+ SG_ Speed : 7|16@0- (0.036,0) [0|0] "km/h" Vector__XXX
+ SG_ Height : 23|16@0- (1,0) [0|0] "m" Vector__XXX
+ SG_ Noise : 39|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ Satelites : 47|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ GPS_status : 58|3@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ IMU_fusion_status : 61|3@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ GPS_frame_index : 51|4@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ Empty_frame_index : 55|4@0+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1026 gps_402: 8 GPStoCAN
+ SG_ Heading_motion : 7|16@0+ (1,0) [0|0] "°" Vector__XXX
+ SG_ Heading_vehicle : 23|16@0+ (1,0) [0|0] "°" Vector__XXX
+ SG_ X_ang_rate : 39|16@0- (0.01,0) [0|0] "°/s" Vector__XXX
+ SG_ Y_ang_rate : 55|16@0- (0.01,0) [0|0] "°/s" Vector__XXX
+
+BO_ 1027 gps_403: 8 GPStoCAN
+ SG_ Z_ang_rate : 7|16@0- (0.01,0) [0|0] "°/s" Vector__XXX
+ SG_ X_acceleration : 23|16@0- (0.01,0) [0|0] "g" Vector__XXX
+ SG_ Y_acceleration : 39|16@0- (0.01,0) [0|0] "g" Vector__XXX
+ SG_ Z_acceleration : 55|16@0- (0.01,0) [0|0] "g" Vector__XXX
+
+BO_ 1028 gps_404: 8 GPStoCAN
+ SG_ UTC_year : 7|8@0+ (1,2000) [0|0] "" Vector__XXX
+ SG_ UTC_month : 15|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ UTC_day : 23|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ UTC_hour : 31|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ UTC_minute : 39|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ UTC_second : 47|8@0+ (1,0) [0|0] "" Vector__XXX
+ SG_ UTC_milisecond : 55|16@0+ (0.015259,0) [0|0] "" Vector__XXX
+
+BO_ 785 HV_Bat_Parameters: 8 PI_CAN2
+ SG_ HV_Charge_level : 0|8@1+ (1,0) [0|100] "%" Vector__XXX
+ SG_ HV_Voltage : 8|16@1+ (1,0) [0|500] "V" Vector__XXX
+ SG_ HV_Max_Temperature : 24|8@1- (1,0) [-10|80] "°C" Vector__XXX
+ SG_ HV_Bat_Flag : 56|1@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ HV_Bat_Power : 40|16@1+ (2,0) [0|40000] "W" Vector__XXX
+ SG_ HV_Min_Temperature : 32|8@1- (1,0) [-10|80] "°C" Vector__XXX
+
+BO_ 786 TS_Temperatures: 8 PI_CAN2
+ SG_ Motor_L_Temp : 0|8@1- (1,0) [-30|120] "°C" Vector__XXX
+ SG_ Motor_R_Temp : 8|8@1- (1,0) [-30|120] "°C" Vector__XXX
+ SG_ Inverter_L_Temp : 16|8@1- (1,0) [-30|125] "°C" Vector__XXX
+ SG_ Inverter_R_Temp : 24|8@1- (1,0) [-30|125] "°C" Vector__XXX
+ SG_ Gear_L_Temp : 32|16@1- (1,0) [-40|150] "°C" Vector__XXX
+ SG_ Gear_R_Temp : 48|16@1- (1,0) [-40|150] "°C" Vector__XXX
+
+BO_ 1600 ECU_status: 6 PI_CAN2
+ SG_ CPU_loading : 0|8@1+ (1,0) [0|100] "%" Vector__XXX
+ SG_ CPU_loading_max : 8|8@1+ (1,0) [0|100] "%" Vector__XXX
+ SG_ Stack_used : 16|32@1+ (1,0) [0|0] "bytes" Vector__XXX
+
+BO_ 1601 ECU_0_01s_task: 8 PI_CAN2
+ SG_ Task_0_01s_last : 0|32@1+ (1,0) [0|10000] "us" Vector__XXX
+ SG_ Task_0_01s_max : 32|32@1+ (1,0) [0|10000] "us" Vector__XXX
+
+BO_ 1602 ECU_0_05s_task: 8 PI_CAN2
+ SG_ Task_0_05s_last : 0|32@1+ (1,0) [0|50000] "us" Vector__XXX
+ SG_ Task_0_05s_max : 32|32@1+ (1,0) [0|50000] "us" Vector__XXX
+
+BO_ 1603 ECU_0_2s_task: 8 PI_CAN2
+ SG_ Task_0_2s_last : 0|32@1+ (1,0) [0|200000] "us" Vector__XXX
+ SG_ Task_0_2s_max : 32|32@1+ (1,0) [0|200000] "us" Vector__XXX
+
+BO_ 1604 ECU_1s_task: 8 PI_CAN2
+ SG_ Task_1s_last : 0|32@1+ (1,0) [0|1000000] "us" Vector__XXX
+ SG_ Task_1s_max : 32|32@1+ (1,0) [0|1000000] "us" Vector__XXX
+
+BO_ 1056 tireTemp_FL_420: 8 tireTempCam_FL
+ SG_ FL_T1 : 7|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T2 : 15|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T3 : 23|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T4 : 31|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T5 : 39|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T6 : 47|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T7 : 55|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T8 : 63|8@0+ (1,0) [0|255] "°C" Vector__XXX
+
+BO_ 1057 tireTemp_FL_421: 8 tireTempCam_FL
+ SG_ FL_T9 : 7|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T10 : 15|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T11 : 23|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T12 : 31|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T13 : 39|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T14 : 47|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T15 : 55|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FL_T16 : 63|8@0+ (1,0) [0|255] "°C" Vector__XXX
+
+BO_ 1058 tireTemp_FR_422: 8 tireTempCam_FR
+ SG_ FR_T1 : 7|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T2 : 15|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T3 : 23|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T4 : 31|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T5 : 39|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T6 : 47|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T7 : 55|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T8 : 63|8@0+ (1,0) [0|255] "°C" Vector__XXX
+
+BO_ 1059 tireTemp_FR_423: 8 tireTempCam_FR
+ SG_ FR_T9 : 7|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T10 : 15|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T11 : 23|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T12 : 31|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T13 : 39|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T14 : 47|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T15 : 55|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ FR_T16 : 63|8@0+ (1,0) [0|255] "°C" Vector__XXX
+
+BO_ 1060 tireTemp_RL_424: 8 tireTempCam_RL
+ SG_ RL_T1 : 7|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T2 : 15|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T3 : 23|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T4 : 31|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T5 : 39|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T6 : 47|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T7 : 55|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T8 : 63|8@0+ (1,0) [0|255] "°C" Vector__XXX
+
+BO_ 1061 tireTemp_RL_425: 8 tireTempCam_RL
+ SG_ RL_T9 : 7|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T10 : 15|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T11 : 23|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T12 : 31|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T13 : 39|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T14 : 47|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T15 : 55|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RL_T16 : 63|8@0+ (1,0) [0|255] "°C" Vector__XXX
+
+BO_ 1062 tireTemp_RR_426: 8 tireTempCam_RR
+ SG_ RR_T1 : 7|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T2 : 15|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T3 : 23|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T4 : 31|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T5 : 39|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T6 : 47|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T7 : 55|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T8 : 63|8@0+ (1,0) [0|255] "°C" Vector__XXX
+
+BO_ 1063 tireTemp_RR_427: 8 tireTempCam_RR
+ SG_ RR_T9 : 7|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T10 : 15|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T11 : 23|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T12 : 31|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T13 : 39|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T14 : 47|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T15 : 55|8@0+ (1,0) [0|255] "°C" Vector__XXX
+ SG_ RR_T16 : 63|8@0+ (1,0) [0|255] "°C" Vector__XXX
+
+BO_ 848 Driver_Commands: 7 PI_CAN2
+ SG_ APPS_1 : 0|8@1+ (1,0) [0|100] "%" Vector__XXX
+ SG_ APPS_2 : 8|8@1+ (1,0) [0|100] "%" Vector__XXX
+ SG_ Brake_F_state : 32|1@1+ (1,0) [0|1] "state" Vector__XXX
+ SG_ Brake_R_state : 33|1@1+ (1,0) [0|1] "state" Vector__XXX
+ SG_ PTT_state : 34|1@1+ (1,0) [0|1] "state" Vector__XXX
+ SG_ Game_ON_demand : 35|1@1+ (1,0) [0|1] "state" Vector__XXX
+ SG_ Void1 : 36|4@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ Steering_Wheel_Ang : 40|16@1- (1,0) [-180|180] "°" Vector__XXX
+ SG_ Brake_Pressure_F : 16|8@1+ (1,0) [0|53] "bar" Vector__XXX
+ SG_ Brake_Pressure_R : 24|8@1+ (1,0) [0|53] "bar" Vector__XXX
+
+BO_ 851 Cooling_System: 4 PI_CAN2
+ SG_ Coolant_Temp : 0|8@1+ (1,0) [0|200] "°C" Vector__XXX
+ SG_ Coolant_Pump_PWM : 8|8@1+ (1,0) [0|100] "%" Vector__XXX
+ SG_ CF_1_demand : 24|1@1+ (1,0) [0|1] "state" Vector__XXX
+ SG_ CF_2_demand : 25|1@1+ (1,0) [0|1] "state" Vector__XXX
+ SG_ CF_Temp_Threshold : 16|8@1+ (1,0) [0|200] "°C" Vector__XXX
+
+BO_ 850 Wheels_Speed: 8 PI_CAN2
+ SG_ FL_WheelSpeed : 0|16@1- (1,0) [-1700|1700] "rpm" Vector__XXX
+ SG_ FR_WheelSpeed : 16|16@1- (1,0) [-1700|1700] "rpm" Vector__XXX
+ SG_ RL_WheelSpeed : 32|16@1- (1,0) [-1700|1700] "rpm" Vector__XXX
+ SG_ RR_WheelSpeed : 48|16@1- (1,0) [-1700|1700] "rpm" Vector__XXX
+
+BO_ 849 Vehicle_Status: 3 PI_CAN2
+ SG_ VehicleSpeed : 0|8@1+ (1,0) [0|255] "km/h" Vector__XXX
+ SG_ RTD_State : 21|1@1+ (1,0) [0|1] "state" Vector__XXX
+ SG_ AIRs_State : 20|1@1+ (1,0) [0|1] "state" Vector__XXX
+ SG_ APPS_Deviation : 22|1@1+ (1,0) [0|1] "state" Vector__XXX
+ SG_ APPS_Final_Percentage : 8|8@1+ (1,0) [0|100] "%" Vector__XXX
+ SG_ Differential_Mode : 16|4@1+ (1,0) [1|10] "mode" Vector__XXX
+
+BO_ 1280 Steering_Status: 3 Steering_wheel
+ SG_ RIGHT_KNOBS : 0|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ DRS_BUTTON : 8|8@1+ (1,0) [0|0] "" Vector__XXX
+ SG_ RADIO_BUTTON : 16|8@1+ (1,0) [0|0] "" Vector__XXX
+
+BO_ 1032 gps_408: 8 GPStoCAN
+ SG_ HR_X_ang_rate : 7|16@0- (0.01,0) [0|0] "°/s" Vector__XXX
+ SG_ HR_Y_ang_rate : 23|16@0- (0.01,0) [0|0] "°/s" Vector__XXX
+ SG_ HR_Z_ang_rate : 39|16@0- (0.01,0) [0|0] "°/s" Vector__XXX
+
+BO_ 1033 gps_409: 8 GPStoCAN
+ SG_ HR_X_accel : 7|16@0- (0.01,0) [0|0] "g" Vector__XXX
+ SG_ HR_Y_accel : 23|16@0- (0.01,0) [0|0] "g" Vector__XXX
+ SG_ HR_Z_accel : 39|16@0- (0.01,0) [0|0] "g" Vector__XXX
+
+
+
+CM_ SG_ 3221225472 APPS_deviation1 "Implausibility of APPSs detected";
+CM_ SG_ 1537 DRSOpen "Signal if the wing is opened or closed
+";
+CM_ SG_ 1537 ConstantValue "This is only constant value to verify
+";
+CM_ BO_ 1538 "3x DS18B20+ Sensors";
+CM_ BO_ 1539 "POLOLU - 2199 Curr_Sensor
+ADC Voltage measurement";
+CM_ BO_ 1024 "GPS Position";
+CM_ BO_ 1025 "Speed, height and GPS status";
+CM_ BO_ 1026 "Angular position and its derivative from accelerometer";
+CM_ BO_ 1027 "Derivative of Z-axis angular position and vehicle's accelerations";
+CM_ BO_ 1028 "GPS time and date";
+CM_ SG_ 785 HV_Bat_Power "Raw value is a half of the current Power usage reported by BMS";
+CM_ BO_ 786 "Temperatures of Tractive System components";
+CM_ BO_ 1600 "Status of Master Controller";
+CM_ SG_ 1600 CPU_loading "Load of CPU";
+CM_ SG_ 1600 CPU_loading_max "Maximum CPU loading since power on";
+CM_ SG_ 1600 Stack_used "Maximum number of bytes used by stack since power on";
+CM_ BO_ 1601 "Master Controller 0.01s task duration";
+CM_ SG_ 1601 Task_0_01s_last "Last measured duration of 0.01s task in microseconds";
+CM_ SG_ 1601 Task_0_01s_max "Maximum measured duration of 0.01s task in microseconds, since power on";
+CM_ BO_ 1602 "Master Controller 0.05s task duration";
+CM_ SG_ 1602 Task_0_05s_last "Last measured duration of 0.05s task in microseconds";
+CM_ SG_ 1602 Task_0_05s_max "Maximum measured duration of 0.05s task in microseconds, since power on";
+CM_ BO_ 1603 "Master Controller 0.2s task duration";
+CM_ SG_ 1603 Task_0_2s_last "Last measured duration of 0.2s task in microseconds";
+CM_ SG_ 1603 Task_0_2s_max "Maximum measured duration of 0.2s task in microseconds, since power on";
+CM_ BO_ 1604 "Master Controller 1s task duration";
+CM_ SG_ 1604 Task_1s_last "Last measured duration of 1s task in microseconds";
+CM_ SG_ 1604 Task_1s_max "Maximum measured duration of 1s task in microseconds, since power on";
+CM_ BO_ 1056 "The first 8 measuring points of Front Left tyre temperature";
+CM_ BO_ 1057 "The last 8 measuring points of Front Left tyre temperature";
+CM_ BO_ 1058 "The first 8 measuring points of Front Right tyre temperature";
+CM_ BO_ 1059 "The last 8 measuring points of Front Right tyre temperature";
+CM_ BO_ 1060 "The first 8 measuring points of Rear Left tyre temperature";
+CM_ BO_ 1061 "The last 8 measuring points of Rear Left tyre temperature";
+CM_ BO_ 1062 "The first 8 measuring points of Rear Right tyre temperature";
+CM_ BO_ 1063 "The last 8 measuring points of Rear Right tyre temperature";
+CM_ BO_ 848 "Vehicle steering command sensors forced by the driver";
+CM_ SG_ 848 APPS_1 "Set point of the first APPS sensor";
+CM_ SG_ 848 APPS_2 "Set point of the second APPS sensor";
+CM_ SG_ 848 Brake_F_state "State of front brake system";
+CM_ SG_ 848 Brake_R_state "State of front brake system";
+CM_ SG_ 848 PTT_state "State of the PTT demand";
+CM_ SG_ 848 Game_ON_demand "Please start a game on the steering wheel";
+CM_ SG_ 848 Void1 "Not used, assign zeros";
+CM_ SG_ 848 Steering_Wheel_Ang "Angle of the steering wheel, positive for turning right";
+CM_ SG_ 848 Brake_Pressure_F "Value of the Front Brake pressure sensor";
+CM_ SG_ 848 Brake_Pressure_R "Value of the Rear Brake pressure sensor";
+CM_ BO_ 851 "Information about cooling system controlled by Master Controller";
+CM_ SG_ 851 Coolant_Temp "Temperature of coolant fluid from sensor located next to coolant pump";
+CM_ SG_ 851 Coolant_Pump_PWM "Coolant pump PWM duty cycle ratio";
+CM_ SG_ 851 CF_1_demand "Demand state of cooling fan 1";
+CM_ SG_ 851 CF_2_demand "Demand state of cooling fan 2";
+CM_ SG_ 851 CF_Temp_Threshold "Coolant fluid temperature that activates fans, constant";
+CM_ BO_ 850 "Speed values of all wheels";
+CM_ BO_ 849 "Overall vehicle parameters";
+CM_ SG_ 849 RTD_State "Ready-to-drive state";
+CM_ SG_ 849 AIRs_State "AIRs state";
+CM_ SG_ 849 APPS_Deviation "Implausibility of APPSs detection";
+CM_ SG_ 849 APPS_Final_Percentage "Accelerator Pedal Position used for further torque processing";
+CM_ SG_ 849 Differential_Mode "Current mode of the differential";
+CM_ BO_ 1280 "Status of buttons and knobs
+";
+CM_ BO_ 1032 "High rate IMU output - angle rate";
+CM_ BO_ 1033 "High rate IMU output - accelerations";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "BusType" "CAN";
+VAL_ 1025 GPS_status 0 "Disconnected" 1 "No Fix" 2 "IMU" 3 "GPS-2D" 4 "GPS-3D" 5 "GPS+IMU" ;
+VAL_ 1025 IMU_fusion_status 0 "Initialization" 1 "Fusion" 2 "Suspended" 3 "Disabled (error)" 4 "Disabled (user)" ;
+VAL_ 848 Brake_F_state 0 "Brakes not actuated" 1 "Brakes actuated" ;
+VAL_ 848 Brake_R_state 0 "Brakes not actuated" 1 "Brakes actuated" ;
+VAL_ 848 PTT_state 0 "PTT disabled" 1 "PTT enabled" ;
+VAL_ 851 CF_1_demand 0 "CF not activated" 1 "CF activated" ;
+VAL_ 851 CF_2_demand 0 "CF not activated" 1 "CF activated" ;
+VAL_ 849 RTD_State 0 "Not Ready-to-Drive" 1 "Ready-to-Drive" ;
+VAL_ 849 AIRs_State 0 "AIRs open" 1 "AIRs closed" ;
+VAL_ 849 APPS_Deviation 0 "Signal plausible" 1 "Signal implausible" ;
+VAL_ 849 Differential_Mode 1 "Basic (locked)" ;
+

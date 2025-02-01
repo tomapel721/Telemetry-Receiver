@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name Telemetry_receiver-eagle-import)(type Legacy)(uri ${KIPRJMOD}/Telemetry_receiver-eagle-import.lib)(options "")(descr ""))
+)

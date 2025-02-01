@@ -1,0 +1,263 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: HV500_L HV500_P PI
+
+
+BO_ 0 EDIL: 1 HV500_L
+ SG_ ERPML : 0|4@1+ (1,0) [0|10000] "RPM"  HV500_L
+ SG_ DUTYL : 4|2@1+ (10,0) [0|100] "%"  HV500_L
+ SG_ IVL : 6|2@1+ (1,0) [0|500] "V"  HV500_L
+
+BO_ 16 AC_DCL: 1 HV500_L
+ SG_ ACL : 0|2@1+ (10,0) [0|100] "A" Vector__XXX
+ SG_ DCL : 2|2@1+ (10,0) [0|100] "A" Vector__XXX
+
+BO_ 32 CTRL: 1 HV500_L
+ SG_ CTL : 0|2@1+ (10,0) [0|600] "C" Vector__XXX
+ SG_ MTL : 2|2@1+ (10,0) [0|500] "C" Vector__XXX
+ SG_ FTL : 4|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 48 IDQL: 1 HV500_L
+ SG_ IDL : 0|4@1+ (100,0) [0|0] "" Vector__XXX
+ SG_ IQL : 4|4@1+ (100,0) [0|0] "" Vector__XXX
+
+BO_ 400 SDL: 1 PI
+ SG_ SDL : 0|2@1+ (10,0) [-100|100] "%" Vector__XXX
+
+BO_ 416 SCL: 1 PI
+ SG_ SCL : 0|2@1+ (10,0) [0|0] "A" Vector__XXX
+
+BO_ 432 SBCL: 1 PI
+ SG_ SBCL : 0|2@1+ (10,0) [0|0] "A" Vector__XXX
+
+BO_ 448 SERPML: 1 PI
+ SG_ SERPML : 0|4@1+ (1,0) [0|10000] "ERPM" Vector__XXX
+
+BO_ 464 SPL: 1 PI
+ SG_ SPL : 0|2@1+ (10,0) [0|0] "" Vector__XXX
+
+BO_ 480 SRCL: 1 PI
+ SG_ SRCL : 0|2@1+ (10,0) [-100|100] "%" Vector__XXX
+
+BO_ 496 SRBCL: 1 PI
+ SG_ SRBCL : 0|2@1+ (10,0) [0|100] "%" Vector__XXX
+
+BO_ 512 SACML: 1 PI
+ SG_ SACML : 0|2@1+ (10,0) [0|0] "A" Vector__XXX
+
+BO_ 528 SACBML: 1 PI
+ SG_ SACBML : 0|2@1+ (10,-100) [0|0] "A" Vector__XXX
+
+BO_ 544 SDCML: 1 PI
+ SG_ SDCML : 0|2@1+ (10,0) [0|0] "A" Vector__XXX
+
+BO_ 560 SDCBML: 1 PI
+ SG_ SDCBML : 0|2@1+ (10,-100) [0|0] "A" Vector__XXX
+
+BO_ 1 EDIP: 1 HV500_P
+ SG_ ERPMP : 0|4@1+ (1,0) [0|10000] "RPM" Vector__XXX
+ SG_ DUTYP : 4|4@1+ (10,0) [0|100] "%" Vector__XXX
+ SG_ IVP : 6|2@1+ (1,0) [0|500] "V" Vector__XXX
+
+BO_ 17 AC_DCP: 1 HV500_P
+ SG_ ACP : 0|2@1+ (10,0) [0|100] "A" Vector__XXX
+ SG_ DCP : 2|2@1+ (10,0) [0|100] "A" Vector__XXX
+
+BO_ 33 CTRP: 1 HV500_P
+ SG_ CTP : 0|2@1+ (10,0) [0|600] "C" Vector__XXX
+ SG_ MTP : 2|2@1+ (10,0) [0|500] "C" Vector__XXX
+ SG_ FTP : 4|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 49 IDQP: 1 HV500_P
+ SG_ IDP : 0|4@1+ (100,0) [0|0] "" Vector__XXX
+ SG_ IQP : 4|4@1+ (100,0) [0|0] "" Vector__XXX
+
+BO_ 401 SDP: 1 PI
+ SG_ SDP : 0|2@1+ (10,0) [-100|100] "%" Vector__XXX
+
+BO_ 417 SCP: 1 PI
+ SG_ SCP : 0|2@1+ (10,0) [0|0] "A" Vector__XXX
+
+BO_ 433 SBCP: 1 PI
+ SG_ SBCP : 0|2@1+ (10,0) [0|0] "A" Vector__XXX
+
+BO_ 449 SERPMP: 1 PI
+ SG_ SERPMP : 0|4@1+ (1,0) [0|10000] "ERPM" Vector__XXX
+
+BO_ 465 SPP: 1 PI
+ SG_ SPP : 0|2@1+ (10,0) [0|0] "" Vector__XXX
+
+BO_ 481 SRCP: 1 PI
+ SG_ SRCP : 0|2@1+ (10,0) [-100|100] "%" Vector__XXX
+
+BO_ 497 SRBCP: 1 PI
+ SG_ SRBCP : 0|2@1+ (10,0) [0|100] "%" Vector__XXX
+
+BO_ 513 SACMP: 1 PI
+ SG_ SACMP : 0|2@1+ (10,0) [0|0] "A" Vector__XXX
+
+BO_ 529 SACBMP: 1 PI
+ SG_ SACBMP : 0|2@1+ (10,-100) [0|0] "A" Vector__XXX
+
+BO_ 545 SDCMP: 1 PI
+ SG_ SDCMP : 0|2@1+ (10,0) [0|0] "A" Vector__XXX
+
+BO_ 561 SDCBMP: 1 PI
+ SG_ SDCBMP : 0|2@1+ (10,-100) [0|0] "A" Vector__XXX
+
+
+
+CM_ BU_ HV500_L "Left inventer
+";
+CM_ BU_ HV500_P "Right inverter";
+CM_ BU_ PI "PI INNOVO";
+CM_ BO_ 0 "ERPM, Duty, Input Voltage (LEFT INVENTER)
+";
+CM_ SG_ 0 ERPML "Electrical RPM (LEFT INVENTER)
+";
+CM_ SG_ 0 DUTYL "Duty cycle (LEFT INVENTER)
+";
+CM_ SG_ 0 IVL "INPUT VOLTAGE (LEFT INVENTER)
+";
+CM_ BO_ 16 "AC and DC current (LEFT INVENTER)
+";
+CM_ SG_ 16 ACL "AC current (LEFT INVENTER)
+";
+CM_ SG_ 16 DCL "DC current (LEFT INVENTER)
+";
+CM_ BO_ 32 "Controller Temperature, Motor Temperature,Fault Code (LEFT INVENTER)
+";
+CM_ SG_ 32 CTL "Controller Temperature (LEFT INVENTER)
+";
+CM_ SG_ 32 MTL "Motor Temperature (LEFT INVENTER)";
+CM_ SG_ 32 FTL "Fault Code (LEFT INVENTER)
+";
+CM_ BO_ 48 "FOC algorithm component Id and Iq (LEFT INVENTER)";
+CM_ SG_ 48 IDL "FOC algorithm component Id (LEFT INVENTER)";
+CM_ SG_ 48 IQL "FOC algorithm component Iq (LEFT INVENTER)
+";
+CM_ BO_ 400 "SET DUTY (LEFT INVENTER)
+This command sets the duty cycle. When the controller receives this message, it automatically switches to duty cycle control mode.
+";
+CM_ SG_ 400 SDL "SET DUTY (LEFT INVENTER)";
+CM_ BO_ 416 "SET CURRENT  (LEFT INVENTER)
+This command sets the goal motor AC current. When the controller receives this
+message, it automatically switches to current control mode.";
+CM_ SG_ 416 SCL "SET CURRENT  (LEFT INVENTER)";
+CM_ BO_ 432 "SET BRAKE CURRENT (LEFT INVENTER)
+This command brakes the motor to still with the set current.";
+CM_ SG_ 432 SBCL "SET BRAKE CURRENT (LEFT INVENTER)";
+CM_ BO_ 448 "SET ERPM (LEFT INVENTER)
+This command sets the electrical RPM goal value to use. Use PID rpm control.";
+CM_ SG_ 448 SERPML "SET ERPM (LEFT INVENTER)";
+CM_ BO_ 464 "SET POSITION (LEFT INVENTER)
+This value sets the desired position of the motor in degrees. Use PID position control.";
+CM_ SG_ 464 SPL "SET POSITION (LEFT INVENTER)";
+CM_ BO_ 480 "SET RELATIVE CURRENT (LEFT INVENTER)
+This command sets a relative current to the minimum and maximum limits set by
+configuration.";
+CM_ SG_ 480 SRCL "SET RELATIVE CURRENT (LEFT INVENTER)";
+CM_ BO_ 496 "SET RELATIVE BRAKE CURRENT (LEFT INVENTER)
+This value sets brake current relative to the minimum current limits.";
+CM_ SG_ 496 SRBCL "SET RELATIVE BRAKE CURRENT (LEFT INVENTER)";
+CM_ BO_ 512 "SET MAXIMUM AC CURRENT (LEFT INVENTER)
+This value sets brake current relative to the minimum current limits.";
+CM_ SG_ 512 SACML "SET MAXIMUM AC CURRENT (LEFT INVENTER)";
+CM_ BO_ 528 "SET MAXIMUM AC BRAKE CURRENT (LEFT INVENTER)
+This value sets the maximum allowable brake current on the AC side";
+CM_ SG_ 528 SACBML "SET MAXIMUM AC BRAKE CURRENT (LEFT INVENTER)";
+CM_ BO_ 544 "SET MAXIMUM DC CURRENT (LEFT INVENTER)
+This value determines the maximum allowable drive current on the DC side";
+CM_ SG_ 544 SDCML "SET MAXIMUM DC CURRENT (LEFT INVENTER)";
+CM_ BO_ 560 "SET MAXIMUM DC BRAKE CURRENT (LEFT INVENTER)
+This value determines the maximum allowable drive current on the DC side";
+CM_ SG_ 560 SDCBML "SET MAXIMUM DC BRAKE CURRENT (LEFT INVENTER)";
+CM_ BO_ 1 "ERPM, Duty, Input Voltage (RIGHT INVENTER)";
+CM_ SG_ 1 ERPMP "Electrical RPM (RIGHT INVENTER)";
+CM_ SG_ 1 DUTYP "Duty cycle (RIGHT INVENTER)
+";
+CM_ SG_ 1 IVP "INPUT VOLTAGE (RIGHT INVENTER)";
+CM_ BO_ 17 "AC and DC current (RIGHT INVENTER)
+";
+CM_ SG_ 17 ACP "AC current (RIGHT INVENTER)";
+CM_ SG_ 17 DCP "DC current (RIGHT INVENTER)";
+CM_ BO_ 33 "Controller Temperature, Motor Temperature,Fault Code (RIGHT INVENTER)
+";
+CM_ SG_ 33 CTP "Controller Temperature (RIGHT INVENTER)";
+CM_ SG_ 33 MTP "Motor Temperature (RIGHT INVENTER)";
+CM_ SG_ 33 FTP "Fault Code (RIGHT INVENTER)";
+CM_ BO_ 49 "FOC algorithm component Id and Iq (RIGHT INVENTER)";
+CM_ SG_ 49 IDP "FOC algorithm component Id (RIGHT INVENTER)";
+CM_ SG_ 49 IQP "FOC algorithm component Iq (RIGHT INVENTER)";
+CM_ BO_ 401 "SET DUTY (RIGHT INVENTER)
+This command sets the duty cycle. When the controller receives this message, it automatically switches to duty cycle control mode.
+";
+CM_ SG_ 401 SDP "SET DUTY (RIGHT INVENTER)";
+CM_ BO_ 417 "SET CURRENT  (RIGHT INVENTER)
+This command sets the goal motor AC current. When the controller receives this
+message, it automatically switches to current control mode.";
+CM_ SG_ 417 SCP "SET CURRENT  (RIGHT INVENTER)";
+CM_ BO_ 433 "SET BRAKE CURRENT (RIGHT INVENTER)
+This command brakes the motor to still with the set current.";
+CM_ SG_ 433 SBCP "SET BRAKE CURRENT (RIGHT INVENTER)";
+CM_ BO_ 449 "SET ERPM (RIGHT INVENTER)
+This command sets the electrical RPM goal value to use. Use PID rpm control.";
+CM_ SG_ 449 SERPMP "SET ERPM (RIGHT INVENTER)";
+CM_ BO_ 465 "SET POSITION (RIGHT INVENTER)
+This value sets the desired position of the motor in degrees. Use PID position control.";
+CM_ SG_ 465 SPP "SET POSITION (RIGHT INVENTER)";
+CM_ BO_ 481 "SET RELATIVE CURRENT (RIGHT INVENTER)
+This command sets a relative current to the minimum and maximum limits set by
+configuration.";
+CM_ SG_ 481 SRCP "SET RELATIVE CURRENT (RIGHT INVENTER)";
+CM_ BO_ 497 "SET RELATIVE BRAKE CURRENT (RIGHT INVENTER)
+This value sets brake current relative to the minimum current limits.";
+CM_ SG_ 497 SRBCP "SET RELATIVE BRAKE CURRENT (RIGHT INVENTER)";
+CM_ BO_ 513 "SET MAXIMUM AC CURRENT (RIGHT INVENTER)
+This value sets brake current relative to the minimum current limits.";
+CM_ SG_ 513 SACMP "SET MAXIMUM AC CURRENT (RIGHT INVENTER)";
+CM_ BO_ 529 "SET MAXIMUM AC BRAKE CURRENT (RIGHT INVENTER)
+This value sets the maximum allowable brake current on the AC side";
+CM_ SG_ 529 SACBMP "SET MAXIMUM AC BRAKE CURRENT (RIGHT INVENTER)";
+CM_ BO_ 545 "SET MAXIMUM DC CURRENT (RIGHT INVENTER)
+This value determines the maximum allowable drive current on the DC side";
+CM_ SG_ 545 SDCMP "SET MAXIMUM DC CURRENT (RIGHT INVENTER)";
+CM_ BO_ 561 "SET MAXIMUM DC BRAKE CURRENT (RIGHT INVENTER)
+This value determines the maximum allowable drive current on the DC side";
+CM_ SG_ 561 SDCBMP "SET MAXIMUM DC BRAKE CURRENT (RIGHT INVENTER)";
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "BusType" "CAN";
+
