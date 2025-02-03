@@ -13,100 +13,116 @@ class RadioListener : public QObject
 {
     Q_OBJECT
 
-private:
-    /**
-     * @brief Process is aborted when @em true
-     */
-    bool _abort;
-    /**
-     * @brief @em true when Worker is doing work
-     */
-    bool _working;
-    /**
-     * @brief Protects access to #_abort
-     */
-    QMutex mutex;
-
-    /*
-     * Instance of NRF24 radio module
-     *
-     */
-    NRF24::NRF24Device* radio;
-
-    /*
-     * Frame which was received by radio
-     *
-     */
-    Frame receivedFrame;
-
-    /*
-     * Interface between C++ and QML
-     */
-    Connection* con = nullptr;
-
-    /*
-     * Object which contains methods which will be resposible for CAN data parsing and processing
-     */
-    CANDataParser* dataParser;
-
 public:
+
     explicit RadioListener(QObject *parent = 0);
 
     ~RadioListener();
 
     /**
-     * @brief Requests the process to start
+     * Requests the process to start
      *
      * It is thread safe as it uses #mutex to protect access to #_working variable.
      */
     void requestWork();
+
     /**
-     * @brief Requests the process to abort
+     * Requests the process to abort
      *
      * It is thread safe as it uses #mutex to protect access to #_abort variable.
      * Function initialize actual finishing thread process
      */
     void abort();
 
-    /* Method which finish thread. It call finished() signal, and the signal call thread's quit() method.
+    /**
+     * Method which finish thread. It call finished() signal, and the signal call thread's quit() method.
      * It has to be that way, because RadioListener don't have connection with Thread's class quit()
-     * method */
+     * method
+     */
     void finishThread();
 
-    /* Method is checking if user didn't close application */
+    /**
+     *  Method is checking if user didn't close application
+     *  @return true if thread is about to finish, otherwise false
+     */
     bool isThreadFinishing();
 
-    /* Method sets the Connection class object */
+    /**
+     *  Method sets the Connection class object
+     */
     void setConnection(Connection* con);
 
-    /* Method sets the Connection class object */
+    /**
+     *  Method sets the Connection class object
+     */
     void setDataParser(CANDataParser* parser);
+
+private:
+
+    /**
+     * Defines if radio listener thread should stop
+     */
+    bool shouldAbort;
+    /**
+     * Defines if radio listener thread is working
+     */
+    bool isThreadWorking;
+    /**
+     * Protects access to #_abort
+     */
+    QMutex mutex;
+
+    /**
+     * Instance of NRF24 radio module
+     */
+    NRF24::NRF24Device* radio;
+
+    /**
+     * Frame which was received by radio
+     */
+    Frame receivedFrame;
+
+    /**
+     * Interface between C++ and QML
+     */
+    Connection* con = nullptr;
+
+    /**
+     * Object which contains methods which will be resposible for CAN data parsing and processing
+     */
+    CANDataParser* dataParser;
+
 
 signals:
 
-    /* Signal emited when telemetry receive frame */
+    /**
+     *  Signal emited when telemetry receive frame
+     *  @param receivedFrame CAN frame which was received
+     */
     void gotFrame(Frame& receivedFrame);
     /**
-     * @brief This signal is emitted when the RadioListener is ready to work
-     * @sa requestWork()
+     * Signal emitted when the RadioListener is ready to work
      */
     void workRequested();
 
     /**
-     * @brief This signal is emitted when RadioListener process is finished with his job
+     * @brief Signal emitted when RadioListener process is finished with his job
      */
     void finished();
 
 public slots:
     /**
-     * @brief Does actual frame chceck
-     *
-     * It checks periodically if something new received
+     * Slot checks periodically if some new message was received
      */
     void listen();
 
-    /* Method handles event of received frame */
+    /**
+     *  Method handles event of received frame
+     *  @param receivedFrame CAN frame which was received
+     */
     void handleFrameReceived(Frame& receivedFrame);
+
+
 };
 
 #endif // RADIOLISTENER_H

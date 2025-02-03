@@ -12,12 +12,6 @@
 #include <sstream>
 #include <iomanip>
 
-
-#define DATABASE_NAME_BUFFER_LENGTH 30
-#define MSG_NAME_BUFFER_LENGTH 20
-#define SIGNAL_NAME_BUFFER_LENGTH 20
-#define SIGNAL_UNIT_BUFFER_LENGTH 5
-
 CANDataParser::CANDataParser()
 {
 
@@ -25,7 +19,7 @@ CANDataParser::CANDataParser()
 
 bool CANDataParser::openDatabase()
 {
-    if(m_databaseName == NULL || strlen(m_databaseName) == 0)
+    if(m_databaseName == nullptr || strlen(m_databaseName) == 0)
     {
         return false;
     }
