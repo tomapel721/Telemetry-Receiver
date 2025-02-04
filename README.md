@@ -1,2 +1,2 @@
 # Telemetry
-Telemetry system transmitter designed for a Formula Student car
+Telemetry system designed for a Formula Student car.
