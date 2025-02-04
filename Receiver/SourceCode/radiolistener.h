@@ -1,5 +1,13 @@
 #ifndef RADIOLISTENER_H
 #define RADIOLISTENER_H
+/*
+ * radiolistener.h
+ *
+ *  Created on: March 1, 2022
+ *     Company: Polsl Racing
+ * Departament: Electronics Team
+ *      Author: Tomasz Pelan
+ */
 
 #include <QObject>
 #include <QMutex>

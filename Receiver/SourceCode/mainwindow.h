@@ -1,8 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+/*
+ * mainwindow.hpp
+ *
+ *  Created on: March 1, 2022
+ *     Company: Polsl Racing
+ * Departament: Electronics Team
+ *      Author: Tomasz Pelan
+ */
 
 #include <QMainWindow>
-
 #include <QThread>
 #include <KVASER/CAN_Data_Parser/CANDataParser.h>
 #include <QQuickWidget>

@@ -35,7 +35,7 @@ void RadioListener::requestWork()
 
     isThreadWorking = true;
     shouldAbort = false;
-    qDebug()<<"Starting telemetry . . . Thread ID: "<<thread()->currentThreadId();
+    qDebug() << "Starting telemetry . . . Thread ID: " << thread()->currentThreadId();
 
     mutex.unlock();
 
@@ -49,7 +49,7 @@ void RadioListener::abort()
     if (isThreadWorking)
     {
         shouldAbort = true;
-        qDebug()<<"Request worker aborting in Thread " << thread()->currentThreadId();
+        qDebug() << "Request worker aborting in Thread " << thread()->currentThreadId();
     }
 
     mutex.unlock();
@@ -116,11 +116,11 @@ void RadioListener::finishThread()
 
 bool RadioListener::isThreadFinishing()
 {
-mutex.lock();
-bool abort = shouldAbort;
-mutex.unlock();
+    mutex.lock();
+    bool abort = shouldAbort;
+    mutex.unlock();
 
-return abort;
+    return abort;
 }
 
 void RadioListener::handleFrameReceived(Frame& receivedFrame)

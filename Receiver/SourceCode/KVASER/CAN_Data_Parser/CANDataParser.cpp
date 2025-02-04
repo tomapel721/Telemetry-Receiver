@@ -67,7 +67,9 @@ std::string CANDataParser::parseCanFrame(Frame& frame)
     executeFrameData(frame.frameData);
 
     returnedString = m_packedSignals;
-    m_packedSignals.erase(m_packedSignals.begin(), m_packedSignals.end()); //buffer ready for another frame
+
+    // buffer ready for another frame
+    m_packedSignals.erase(m_packedSignals.begin(), m_packedSignals.end());
 
     return returnedString;
 }
@@ -81,7 +83,6 @@ void CANDataParser::setDatabaseName(QString databaseName)
 void CANDataParser::executeFrameData(uint8_t* data)
 {
     m_status = kvaDbGetFirstSignal(m_messageHandler, &m_signalHandler);
-
     if (m_status != kvaDbOK)
     {
         std::cout << "Error when getting first signal" << std::endl;
@@ -136,8 +137,7 @@ int findNthOccur(std::string str, char ch, int N)
 {
     int occur = 0;
 
-    // Loop to find the Nth
-    // occurrence of the character
+    // Loop to find the Nth occurrence of the character
     for (int i = 0; i < str.length(); i++) {
         if (str[i] == ch) {
             occur += 1;

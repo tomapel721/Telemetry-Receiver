@@ -64,7 +64,7 @@ import QtQuick.Controls.Styles 1.4
             ctx.strokeStyle = "#b40000";
             ctx.lineWidth = outerRadius * 0.02;
             ctx.arc(outerRadius, outerRadius, outerRadius - ctx.lineWidth / 2,
-                degreesToRadians(valueToAngle(268) - 280), degreesToRadians(valueToAngle(298) - 280));
+            degreesToRadians(valueToAngle(268) - 280), degreesToRadians(valueToAngle(298) - 280));
             ctx.stroke();
         }
     }

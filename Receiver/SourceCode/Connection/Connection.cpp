@@ -1,19 +1,27 @@
-#include "Connection.h"
+/*
+ * Connection.cpp
+ *
+ *  Created on: March 1, 2022
+ *     Company: Polsl Racing
+ * Departament: Electronics Team
+ *      Author: Tomasz Pelan
+ */
+
 #include <QUrl>
 #include <QQmlComponent>
 #include <QDebug>
 #include <QQuickItem>
 
+#include "Connection.h"
+
 Connection::Connection(QObject *parent): QObject(parent)
 {
-
 }
 
 Connection::~Connection()
 {
-
 }
-void Connection::setTextHandler(QObject* textSignalsHandler) //QQmlApplicationEngine* engine
+void Connection::setTextHandler(QObject* textSignalsHandler)
 {
     textSignals = textSignalsHandler;
 }
@@ -25,12 +33,7 @@ void Connection::setSpeedometerHandler(QObject *obj)
 
 void Connection::changeText()
 {
-    // potem następnym krokiem będzie podpięcie tego do slotu i podpiecię z sygnałem
-    if(textSignals)
-    {
-        textSignals->setProperty("text", "Ale jednak moje wlasne!");
-    }
-    else
+    if(!textSignals)
     {
         qDebug() << "Error in component linking - no text field connected";
     }

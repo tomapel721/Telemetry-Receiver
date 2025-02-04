@@ -1,5 +1,4 @@
 #pragma once
-
 /*
 * NRF24.hpp
 * 
@@ -10,7 +9,6 @@
 *
 *   Class that represents single NRF24 radio module
 *   Note: To use this class properly you have to initialise it -> to do so use Init() at the beginning of your code.
-*
 */
 
 #include <stdint.h>

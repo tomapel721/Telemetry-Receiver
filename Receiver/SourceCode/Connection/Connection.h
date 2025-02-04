@@ -1,8 +1,15 @@
 #ifndef CONNECTION_H
 #define CONNECTION_H
+/*
+ * Connection.h
+ *
+ *  Created on: March 1, 2022
+ *     Company: Polsl Racing
+ * Departament: Electronics Team
+ *      Author: Tomasz Pelan
+ */
 
 #include <QObject>
-
 #include <QQmlApplicationEngine>
 #include <QQmlComponent>
 
@@ -25,49 +32,53 @@ public:
     Q_INVOKABLE void updateSpeed();
 
 signals:
-    // Gauges
 
-    // Speedometer
-    void speedReceived(double value); //done
+    /** Signals which are general received data handlers
+     *  @param value received value
+     */
+
+    // Vehicle speed
+    void speedReceived(double value);
 
     // Battery capacity
-    void batteryCapacityValueReceived(double value); //done
+    void batteryCapacityValueReceived(double value);
 
     // Steering wheel angle
-    void steeringWheelAngleValueReceived(double value); //done
+    void steeringWheelAngleValueReceived(double value);
 
     // Coolant
     void coolantTemperatureValueReceived(double value);
 
     // Tires
-    void tireTemperatureFrontRightValueReceived(double value); //done
-    void tireTemperatureFrontLeftValueReceived(double value);  //done
-    void tireTemperatureBackRightValueReceived(double value);  //done
-    void tireTemperatureBackLeftValueReceived(double value);   //done
+    void tireTemperatureFrontRightValueReceived(double value);
+    void tireTemperatureFrontLeftValueReceived(double value);
+    void tireTemperatureBackRightValueReceived(double value);
+    void tireTemperatureBackLeftValueReceived(double value);
 
     // Battery HV
-    void hvTemperatureNowValueReceived(double value); //done
-    void hvTemperatureMinValueReceived(double value); //done
-    void hvTemperatureMaxValueReceived(double value); //done
-    void hvVoltageValueReceived(double value); //done
-    void hvPowerValueReceived(double value); //done
+    void hvTemperatureNowValueReceived(double value);
+    void hvTemperatureMinValueReceived(double value);
+    void hvTemperatureMaxValueReceived(double value);
+    void hvVoltageValueReceived(double value);
+    void hvPowerValueReceived(double value);
 
     // Battery LV
-    void lvCurrentValueReceived(double value); //done
-    void lvVoltageValueReceived(double value); //done
-    void lvPowerValueReceived(double value); //done
+    void lvCurrentValueReceived(double value);
+    void lvVoltageValueReceived(double value);
+    void lvPowerValueReceived(double value);
 
     // Engine
-    void engineTemperatureLeftValueReceived(double value); //done
-    void engineTemperatureRightValueReceived(double value); //done
+    void engineTemperatureLeftValueReceived(double value);
+    void engineTemperatureRightValueReceived(double value);
 
     // Gearbox
-    void gearboxTemperatureLeftValueReceived(double value); //done
-    void gearboxTemperatureRightValueReceived(double value); //done
+    void gearboxTemperatureLeftValueReceived(double value);
+    void gearboxTemperatureRightValueReceived(double value);
 
     // Pedals
     void throttleValueReceived(double value);
     void breakValueReceived(double value);
+
     // Inverters
     void leftInverterTemperatureValueReceived(double value);
     void rightInverterTemperatureValueReceived(double value);
@@ -82,17 +93,6 @@ signals:
     void batteryTemperatureValueReceived(int value);
     void powerConsumptionValueReceived(int value);
     void invertersTemperaturesValuesReceived(int value);
-
-    //void proceedFrame(Frame frame); // TODO: zaimportowac Frame
-
-    // w teorii do każdego kompontentu będzie potrzebny osobny slot, źródło:forbot
-    // ale
-    // na ten moment niech będzie jedynie wyświetlanie zawartości poszczególnych sygnałów
-
-public slots:
-
-    //void showFrameData(Frame frame);
-
 };
 
 #endif // CONNECTION_H

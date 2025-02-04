@@ -19,8 +19,6 @@ using namespace std;
 using namespace NRF24;
 uint8_t NRF24::addrP0Backup[3];
 
-/*****    Constructor/Destructor    *****/
-
 NRF24Device::NRF24Device()
 {
 	FT_STATUS status;
@@ -65,13 +63,11 @@ NRF24Device::~NRF24Device()
 	Cleanup_libMPSSE();
 }
 
-/******    Addressing the Transmitter/Receiver    ******/
-
 void NRF24Device::SetRXAddress(uint8_t pipe, uint8_t* pAddress)
 {
-	// pipe 0 and pipe 1 are fully 40-bits storaged
-	// pipe 2-5 is storaged only with last byte. Rest are as same as pipe 1
-	// pipe 0 and 1 are LSByte first so they are needed to reverse address
+    // Pipe 0 and pipe 1 are fully 40-bits storaged.
+    // Pipe 2-5 is storaged only with last byte. Rest are as same as pipe 1.
+    // Pipe 0 and 1 are LSByte first so they are needed to reverse address.
 	if (pAddress == nullptr)
 		return;
 
@@ -98,85 +94,88 @@ void NRF24Device::SetTXAddress(uint8_t* pAddress)
 	uint8_t indexOfArrayAdresses;
 	uint8_t address_rev[NRF24::ADDR_SIZE];
 
-	ReadRegisters(NRF24::RX_ADDR_P0, address_rev, NRF24::ADDR_SIZE); // Backup P0 address
+    // Backup P0 address
+    ReadRegisters(NRF24::RX_ADDR_P0, address_rev, NRF24::ADDR_SIZE);
 
+    // Reverse P0 address
 	for (indexOfArrayAdresses = 0; indexOfArrayAdresses < NRF24::ADDR_SIZE; indexOfArrayAdresses++)
 	{
-		NRF24::addrP0Backup[NRF24::ADDR_SIZE - 1 - indexOfArrayAdresses] = address_rev[indexOfArrayAdresses]; //Reverse P0 address
+        NRF24::addrP0Backup[NRF24::ADDR_SIZE - 1 - indexOfArrayAdresses] = address_rev[indexOfArrayAdresses];
 	}
 		
-
 	for (indexOfArrayAdresses = 0; indexOfArrayAdresses < NRF24::ADDR_SIZE; indexOfArrayAdresses++)
 	{
 		address_rev[NRF24::ADDR_SIZE - 1 - indexOfArrayAdresses] = pAddress[indexOfArrayAdresses];
 	}
 	
-	//make pipe 0 address backup;
+    // Make pipe 0 address backup;
+    WriteRegisters(NRF24::RX_ADDR_P0, address_rev, NRF24::ADDR_SIZE);
 
-	WriteRegisters(NRF24::RX_ADDR_P0, address_rev, NRF24::ADDR_SIZE); // Pipe 0 must be same for auto ACk
+    // Pipe 0 must be same both for transmitter and receiver. Otherwise auto-ack won't work
 	WriteRegisters(NRF24::TX_ADDR, address_rev, NRF24::ADDR_SIZE);
 }
 
-								/******    Modes of work (RX/TX)    ******/
-
-void NRF24Device::RxMode() // mo¿e byæ ¿e komunikacja z SPI bêdzie lekko zmieniona
+void NRF24Device::RxMode()
 {
 	uint8_t config = ReadRegister(NRF24::CONFIG);
+
 	// Restore pipe 0 adress after comeback from TX mode
 	SetRXAddress(0, NRF24::addrP0Backup);
 
 	// PRIM_RX bit set
     config |= (1 << NRF24::BIT_CONFIG__PRIM_RX);
+
     // PWR_UP bit set
     config |= (1 << NRF24::BIT_CONFIG__PWR_UP);
 
     WriteRegister(NRF24::CONFIG, config);
+
     // Reset status
     WriteRegister(NRF24::STATUS, (1 << NRF24::BIT_STATUS__RX_DR) | (1 << NRF24::BIT_STATUS__TX_DS) | (1 << NRF24::BIT_STATUS__MAX_RT));
+
     // Flush RX
     FlushRX();
+
     // Flush TX
     FlushTX();
 
-	//NRF24_CE_HIGH; 
-
-	this_thread::sleep_for(chrono::milliseconds(1)); // <==> HAL_Delay(1)
+    this_thread::sleep_for(chrono::milliseconds(1));
 }
 
 void NRF24Device::TxMode()
 {
-	//NRF24_CE_LOW;
-
 	uint8_t config = ReadRegister(NRF24::CONFIG);
+
 	// PWR_UP bit set
 	config |= (1 << NRF24::BIT_CONFIG__PWR_UP);
+
 	// PRIM_RX bit low
 	config &= ~(1 << NRF24::BIT_CONFIG__PRIM_RX);
+
 	WriteRegister(NRF24::CONFIG, config);
+
 	// Reset status
 	WriteRegister(NRF24::STATUS, (1 << NRF24::BIT_STATUS__RX_DR) | (1 << NRF24::BIT_STATUS__TX_DS) | (1 << NRF24::BIT_STATUS__MAX_RT));
-	// Flush RX
+
+    // Flush RX
 	FlushRX();
-	// Flush TX
+
+    // Flush TX
 	FlushTX();
 
-	this_thread::sleep_for(chrono::milliseconds(1)); // <==> HAL_Delay(1)
+    this_thread::sleep_for(chrono::milliseconds(1));
 }
-
-/******    Data read    ******/
 
 bool NRF24Device::RxAvailable()
 {
 	uint8_t status = ReadRegister(NRF24::STATUS);
     uint8_t fifo = ReadRegister(NRF24::FIFO_STATUS);
 
-	// RX FIFO Interrupt
-    //qDebug() << "CHECK - status = " << status;
-    //if ((status & (1 << 6))) // - mod
-    if((status & (1 << 6))) // 0 = pipe number
+    // Check interrupt flag
+    if((status & (1 << BIT_STATUS__RX_DR)))
 	{
-		//nrf24_rx_flag = 1;
-        status |= (1 << 6); // Interrupt flag clear
+        // Interrupt flag clear
+        status |= (1 << BIT_STATUS__RX_DR);
 
         WriteRegister(NRF24::STATUS, status);
 		return true;
@@ -201,10 +200,10 @@ void NRF24Device::ReadRXPayload(uint8_t* pData)
 	{
 		WriteRegister(NRF24::STATUS, (1 << NRF24::BIT_STATUS__TX_DS));
 	}
+
     this_thread::sleep_for(chrono::milliseconds(100));
 }
 
-/******    Register functions    ******/
 
 uint32_t NRF24Device::WriteRegister(const uint8_t reg, const uint8_t dataToSend)
 {
@@ -212,16 +211,17 @@ uint32_t NRF24Device::WriteRegister(const uint8_t reg, const uint8_t dataToSend)
 		| SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE
 		| SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE;
 
-	FT_STATUS status;
 	uint32 dataWritten = 0;
-
 	uint32 dataSize = 2;
 	uint8 dataForSPI[2];
 
-	dataForSPI[0] = NRF24::CMD_DATA_WRITE | reg; // first byte is writing command and register
-	dataForSPI[1] = dataToSend; //second is data
+    // First byte is writing command and register
+    dataForSPI[0] = NRF24::CMD_DATA_WRITE | reg;
 
-	status = SPI_Write(NRF24Device::handle, dataForSPI, dataSize, &dataWritten, transferOptions);
+    // Second byte is data
+    dataForSPI[1] = dataToSend;
+
+    SPI_Write(NRF24Device::handle, dataForSPI, dataSize, &dataWritten, transferOptions);
     this_thread::sleep_for(chrono::milliseconds(10));
 	return dataWritten;
 }
@@ -232,21 +232,20 @@ uint32_t NRF24Device::WriteRegisters(const uint8_t reg, uint8_t* dataToSend, con
 		| SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE
 		| SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE;
 
-	FT_STATUS status;
 	uint32 dataWritten = 0;
+    uint32 dataSize = lengthOfData + 1; // First byte is SPI command, then we are relocating given as argument data
+    unique_ptr<uint8_t[]> dataForSPI = make_unique<uint8_t[]>(dataSize);
 
-	uint32 dataSize = lengthOfData + 1; // first byte is SPI command, then we are relocating given as argument data
+    // First byte is command and register
+    dataForSPI[0] = NRF24::CMD_DATA_WRITE | reg;
 
-	unique_ptr<uint8_t[]> dataForSPI = make_unique<uint8_t[]>(dataSize); //memory allocation
-
-	dataForSPI[0] = NRF24::CMD_DATA_WRITE | reg; // first byte is command and register
-
-	for (int i = 0; i < lengthOfData; i++) // Then data
+    // Then the data
+    for (int i = 0; i < lengthOfData; i++)
 	{
 		dataForSPI[i + 1] = dataToSend[i];
 	}
 
-	status = SPI_Write(NRF24::NRF24Device::handle, dataForSPI.get(), dataSize, &dataWritten, transferOptions);
+    SPI_Write(NRF24::NRF24Device::handle, dataForSPI.get(), dataSize, &dataWritten, transferOptions);
     this_thread::sleep_for(chrono::milliseconds(10));
 	return dataWritten;
 }
@@ -274,21 +273,25 @@ uint8_t NRF24Device::ReadRegister(const uint8_t reg)
 
 uint32_t NRF24Device::ReadRegisters(uint8_t reg, uint8_t* returnedData, const uint8_t lengthOfData)
 {
-	FT_STATUS status;
+    FT_STATUS status;
 
 	unique_ptr<uint8_t[]> readedData = make_unique<uint8_t[]>(lengthOfData); 
 	uint32 dataSent = 0;
 	uint32 dataRead = 0;
 
-	uint8_t spiReadCommand = NRF24::CMD_DATA_READ | reg; // first byte is command and register
-	
-	uint32_t sizeToTransfer = 1; // for command
+    // First byte is command and register
+    uint8_t spiReadCommand = NRF24::CMD_DATA_READ | reg;
 
+    // Just store 1 byte for the command
+    uint32_t sizeToTransfer = 1;
+
+    // Send command
 	status = SPI_Write(NRF24::NRF24Device::handle, &spiReadCommand, sizeToTransfer, &dataSent, SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES
-		| SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE); // sending command only
+        | SPI_TRANSFER_OPTIONS_CHIPSELECT_ENABLE);
 
+    // Read actual data
 	status = SPI_Read(handle, returnedData, lengthOfData, &dataRead, SPI_TRANSFER_OPTIONS_SIZE_IN_BYTES
-		| SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE); // actual data reading
+        | SPI_TRANSFER_OPTIONS_CHIPSELECT_DISABLE);
 
     this_thread::sleep_for(chrono::milliseconds(10));
 	return dataRead;

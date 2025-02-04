@@ -33,7 +33,6 @@ ChartView
 
     DateTimeAxis{
         property string someDateTest: Qt.formatDateTime(new Date(), "hh:mm:ss:zzz")
-        //property var test: someDateTest.getDate()
         property var myDate: new Date(Qt.formatDateTime(new Date(), "hh:mm:ss:zzz"))
         id:  timeAxis
         min: myDate
@@ -60,12 +59,8 @@ ChartView
 
         function onBatteryTemperatureValueReceived(value){
             var currentTime = Qt.formatDateTime(new Date(), "hh:mm:ss:zzz");
-            //property var test: someDateTest.getDate()
             var myDate = new Date(currentTime, "hh:mm:ss:zzz")
-            //console.log(Qt.formatDateTime(new Date(), "hh:mm:ss:zzz"));
-                batteryTemperature.append(myDate, value);
-
-
+            batteryTemperature.append(myDate, value);
         }
     }
 }

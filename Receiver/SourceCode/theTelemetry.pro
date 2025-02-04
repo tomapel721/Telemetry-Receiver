@@ -1,5 +1,5 @@
 QT += core gui
-QT += serialport #biblioteka serial port do obsługi USB
+QT += serialport
 QT += quick widgets
 QT += charts
 QT += quickcontrols2
@@ -7,10 +7,6 @@ QT += quickwidgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
-
-# You can make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
     Connection/Connection.cpp \
@@ -41,24 +37,12 @@ win32: LIBS += "-$$PWD\FTDI_Library\libMPSSE.dll"
 
 INCLUDEPATH += "C:\Kvaser\INC"
 
-#win32: LIBS += -L"C:\Kvaser\Lib\x64" -lkvaDbLib
 win32: LIBS += -L"$$PWD\KVASER\x64" -lkvaDbLib
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-#DISTFILES += \
-#    QML/BatteryTemperature.qml \
-#    QML/DashboardGaugeStyle.qml \
-#    QML/EngineTemperature.qml \
-#    QML/Gauges.qml \
-#    QML/InverterTemperature.qml \
-#    QML/Plots.qml \
-#    QML/RPM_Gauge_Style.qml \
-#    QML/main.qml \
-#    QML/powerConsumption.qml
 
 RESOURCES += \
     QML/qml.qrc
