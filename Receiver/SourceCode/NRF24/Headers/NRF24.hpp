@@ -46,12 +46,12 @@ namespace NRF24
         /**
          *  The function sets the mode of NRF as receiver
          */
-		void RxMode();
+        void SetRxMode();
 
         /**
          *  The function sets the mode of NRF as transmitter
          */
-		void TxMode();
+        void SetTxMode();
 
         /**
          *  The function checks if there is any data available to read

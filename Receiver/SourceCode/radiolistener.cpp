@@ -21,7 +21,7 @@ RadioListener::RadioListener(QObject *parent) :
     radio->init();
     radio->SetRXAddress(0, (uint8_t*) "Odb");
     radio->SetTXAddress((uint8_t*)"Nad");
-    radio->RxMode();
+    radio->SetRxMode();
 }
 
 RadioListener::~RadioListener()
