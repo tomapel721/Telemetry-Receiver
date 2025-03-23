@@ -2,8 +2,10 @@
 The receiver part of telemetry system which was implemented inside a Formula Student EV.
 
 ## :computer: How it works - technologies
-Used QT Framework
+Used **QT Framework**
+
 Front-end: **QML**
+
 Back-end: **QT C++**
 
 
